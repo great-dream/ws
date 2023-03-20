@@ -31,6 +31,7 @@
                 axios.post("/api/user/login",{"userId":wsThat.userId,"password":wsThat.password}).then(function (response) {
                     console.log(response);
                     store.dispatch('SetToken',response.data.token);
+                    sessionStorage.setItem('token',response.data.token);
                     router.push("/main");
                 }).catch(function (response) {
                     console.log(response);

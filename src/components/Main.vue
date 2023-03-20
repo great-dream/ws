@@ -1,16 +1,27 @@
 <template>
-    <div>我是主页面</div>
-    <WsMenu></WsMenu>
+    <div class="common-layout">
+        <el-container id="el-container">
+            <el-header>Header</el-header>
+            <el-container>
+                <el-aside width="200px">
+                    <router-link to="/userManager">用户管理</router-link>
+                </el-aside>
+                <el-container>
+                    <el-main>
+                        <router-view></router-view>
+                    </el-main>
+                    <el-footer>中国电网</el-footer>
+                </el-container>
+            </el-container>
+        </el-container>
+    </div>
 </template>
 
-<script>
-    import WsMenu from './Menu'
-    export default {
-        name: "wsMain",
-        components: {
-            WsMenu
 
-        }
+<script>
+    export default {
+        name: "wsMain"
+
     }
 
 </script>
