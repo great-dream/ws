@@ -5,6 +5,8 @@
             <el-container>
                 <el-aside width="200px">
                     <router-link to="/userManager">用户管理</router-link>
+                    <router-link to="/positionManager">仓位管理</router-link>
+                    <router-link to="/dictManager">字典管理</router-link>
                 </el-aside>
                 <el-container>
                     <el-main>
