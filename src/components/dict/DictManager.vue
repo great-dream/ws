@@ -1,29 +1,28 @@
 <template>
     <div>
-        仓库：
-        <el-select v-model="warehouse" placeholder="请选择仓库" >
-            <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
+        类别：
+        <el-select v-model="category" placeholder="请选择类别" >
+            <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
             </el-option>
         </el-select>
-        仓位：<el-input v-model="position" placeholder="请输入仓位" type="text" style="width: 200px"></el-input>
-        <el-button type="primary" v-on:click="queryPositions(this.page,this.size)" style="margin-left: 100px">查询</el-button>
+        编码：<el-input v-model="code" placeholder="请输入编码" type="text" style="width: 200px"></el-input>
+        名称：<el-input v-model="name" placeholder="请输入名称" type="text" style="width: 200px"></el-input>
+        <el-button type="primary" v-on:click="queryDicts(this.page,this.size)" style="margin-left: 100px">查询</el-button>
         <el-button type="primary" v-on:click="clearData()">重置</el-button>
     </div>
     <div align="left">
-        <el-button type="primary" v-on:click="addPosition()">新增仓位</el-button>
-<!--        <el-button type="primary" v-on:click="editPosition()">新增用户</el-button>-->
+        <el-button type="primary" v-on:click="addDict()">新增字典</el-button>
     </div>
     <div>
-        <el-table :data="positions" stripe>
+        <el-table :data="dicts" stripe>
             <el-table-column prop="id" label="唯一键"></el-table-column>
-            <el-table-column prop="warehouse" label="仓库">
+            <el-table-column prop="category" label="类别">
                 <template #default="scope">
-                    {{warehouseName(scope.row.warehouse)}}
+                    {{categoryName(scope.row.category)}}
                 </template>
             </el-table-column>
-<!--            <el-table-column prop="cabinet" label="仓柜"></el-table-column>-->
-            <el-table-column prop="position" label="仓位"></el-table-column>
-            <el-table-column prop="number" label="数量"></el-table-column>
+            <el-table-column prop="code" label="编码"></el-table-column>
+            <el-table-column prop="name" label="名称"></el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="deleteFlag" label="是否删除">
                 <template #default="scope">
@@ -32,9 +31,9 @@
             </el-table-column>
             <el-table-column prop="" label="操作">
                 <template #default="scope">
-                    <el-button type="primary" v-on:click="editPosition(scope.$index,scope.row)">编辑</el-button>
-                    <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activatePositionApi(scope.$index,scope.row)">激活</el-button>
-                    <el-button type="primary"  v-if="!scope.row.deleteFlag" v-on:click="deletePositionApi(scope.$index,scope.row)">删除</el-button>
+                    <el-button type="primary" v-on:click="editDict(scope.$index,scope.row)">编辑</el-button>
+                    <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activateDictApi(scope.$index,scope.row)">激活</el-button>
+                    <el-button type="primary"  v-if="!scope.row.deleteFlag" v-on:click="deleteDictApi(scope.$index,scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -50,60 +49,54 @@
         />
 
     </div>
-    <!-- 新增仓位对话框 -->
-    <el-dialog title="新增仓位" v-model="addPositionVisible">
+    <!-- 新增字典对话框 -->
+    <el-dialog title="新增字典" v-model="addDictVisible">
         <el-form :model="addForm">
-            <el-form-item label="仓库">
-                <el-select v-model="addForm.warehouse" placeholder="请选择仓库" >
-                    <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
+            <el-form-item label="类别">
+                <el-select v-model="addForm.category" placeholder="请选择类别" >
+                    <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
                     </el-option>
                 </el-select>
             </el-form-item>
-<!--            <el-form-item label="仓柜">-->
-<!--                <el-input v-model="addForm.cabinet" autocomplete="off"></el-input>-->
-<!--            </el-form-item>-->
-            <el-form-item label="仓位">
-                <el-input v-model="addForm.position" autocomplete="off"></el-input>
+            <el-form-item label="编码">
+                <el-input v-model="addForm.code" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="数量">
-                <el-input v-model="addForm.number" autocomplete="off"></el-input>
+            <el-form-item label="名称">
+                <el-input v-model="addForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
                 <el-input v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="删除">
+            <el-form-item label="删  除">
                 <el-switch v-model="addForm.deleteFlag"></el-switch>
             </el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button v-on:click="addPositionVisible=false">取 消</el-button>
-                <el-button type="primary" v-on:click="addPositionApi()">确 定</el-button>
+                <el-button v-on:click="addDictVisible=false">取 消</el-button>
+                <el-button type="primary" v-on:click="addDictApi()">确 定</el-button>
             </span>
         </template>
     </el-dialog>
-    <!-- 编辑用户对话框 -->
-    <el-dialog title="修改仓位" v-model="editPositionVisible">
+    <!-- 编辑字典对话框 -->
+    <el-dialog title="修改字典" v-model="editDictVisible">
         <el-form :model="editForm">
             <el-form-item label="id">
                 <el-input v-model="editForm.id" disabled="false"></el-input>
             </el-form-item>
-            <el-form-item label="仓  库">
-                <el-select v-model="editForm.warehouse" placeholder="请选择仓库" >
-                    <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
+            <el-form-item label="类别">
+                <el-select v-model="editForm.category" placeholder="请选择类别" >
+                    <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
                     </el-option>
                 </el-select>
             </el-form-item>
-<!--            <el-form-item label="仓柜">-->
-<!--                <el-input v-model="editForm.cabinet" autocomplete="off"></el-input>-->
-<!--            </el-form-item>-->
-            <el-form-item label="仓  位">
-                <el-input v-model="editForm.position" autocomplete="off"></el-input>
+            <el-form-item label="编码">
+                <el-input v-model="editForm.code" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="数  量">
-                <el-input v-model="editForm.number" autocomplete="off"></el-input>
+            <el-form-item label="名称">
+                <el-input v-model="editForm.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备  注">
+            <el-form-item label="备注">
                 <el-input v-model="editForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
@@ -112,8 +105,8 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button v-on:click="editPositionVisible=false">取 消</el-button>
-                <el-button type="primary" v-on:click="editPositionApi()">确 定</el-button>
+                <el-button v-on:click="editDictVisible=false">取 消</el-button>
+                <el-button type="primary" v-on:click="editDictApi()">确 定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -122,43 +115,45 @@
 <script>
     import axios from "axios";
     export default {
-        name: "PositionManager",
+        name: "DictManager",
         data(){
             return {
-                warehouse:"",
-                position:"",
+                category:"",
+                code:"",
+                name:"",
                 page:1,
                 size:20,
                 total:0,
-                positions:[],
-                addPositionVisible:false,
+                dicts:[],
+                addDictVisible:false,
                 addForm:{
-                    warehouse:"",cabinet:"",position:"",number:"",remark:""
+                    category:"",code:"",name:"",remark:"",deleteFlag:0
                 },
-                editPositionVisible:false,
+                editDictVisible:false,
                 editForm:{
-                    id:"",warehouse:"",cabinet:"",position:"",number:"",remark:""
+                    id:"",category:"",code:"",name:"",remark:"",deleteFlag:""
                 },
-                warehouses:[]
+                categorys:[]
             }
         },
         mounted() {
-         this.queryWarehoses();
+            this.queryCategorys();
         },
         methods:{
             clearData(){
-                this.warehouse="";
-                this.position="";
+                this.category="";
+                this.code="";
+                this.name="";
             },
-            queryWarehoses(){
+            queryCategorys(){
                 let wsThat = this;
-                let categoryM="WAREHOUSE";
+                let categoryM="ROOT_TYPE";
                 let params="?category="+categoryM;
                 axios.get("/api/dictionary/query"+params).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
-                        wsThat.warehouses=response.data.data;
-                        console.log(wsThat.warehouses);
+                        wsThat.categorys=response.data.data;
+                        console.log(wsThat.categorys);
                     } else {
                         alert("查询失败啦");
                     }
@@ -167,26 +162,26 @@
                     console.log(response);
                 });
             },
-            warehouseName(code){
-                for(let wh of this.warehouses){
-                    if(code==wh.code){
-                        return wh.name;
+            categoryName(code){
+                for(let cat of this.categorys){
+                    if(code==cat.code){
+                        return cat.name;
                     }
                 }
                 return code;
             },
-            queryPositions(page,size){
-               // this.$message({message:"info提示",type:"info"});
+            queryDicts(page,size){
+                // this.$message({message:"info提示",type:"info"});
                 let wsThat = this;
-                let params="?warehouse="+wsThat.warehouse+"&position="+wsThat.position+"&page="+page+"&size="+size;
-                axios.get("/api/position/query"+params).then(function (response) {
+                let params="?category="+wsThat.category+"&code="+wsThat.code+"&name="+wsThat.name+"&page="+page+"&size="+size;
+                axios.get("/api/dictionary/query2"+params).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
-                        wsThat.positions=response.data.data.data;
+                        wsThat.dicts=response.data.data.data;
                         wsThat.page=response.data.data.page;
                         wsThat.size=response.data.data.size;
                         wsThat.total=response.data.data.total;
-                        console.log(this.positions);
+                        console.log(this.dicts);
                     } else {
                         alert("查询失败啦");
                     }
@@ -196,16 +191,16 @@
                 });
             },
             handleSizeChange(newSize){
-                this.queryPositions(this.page,newSize);
+                this.queryDicts(this.page,newSize);
             },
             handleCurrentChange(newPage){
-                this.queryPositions(newPage,this.size);
+                this.queryDicts(newPage,this.size);
             },
-            addPosition(){
-                this.addPositionVisible=true;
+            addDict(){
+                this.addDictVisible=true;
             },
-            addPositionApi(){
-                axios.post("/api/position/addPosition",this.addForm).then(function (response) {
+            addDictApi(){
+                axios.post("/api/dictionary/addDict",this.addForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
@@ -216,19 +211,19 @@
                 }).catch(function (response) {
                     console.log(response);
                 });
-                this.addPositionVisible=false;
+                this.addDictVisible=false;
             },
-            // editPosition(){
-            //     this.editPositionVisible=true;
+            // editDict(){
+            //     this.editDictVisible=true;
             // },
-            editPosition(index,row){
-                this.editPositionVisible=true;
+            editDict(index,row){
+                this.editDictVisible=true;
                 console.log(index+'---'+row);
                 this.editForm=row;
 
             },
-            editPositionApi(){
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+            editDictApi(){
+                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
@@ -239,12 +234,12 @@
                 }).catch(function (response) {
                     console.log(response);
                 });
-                this.editPositionVisible=false;
+                this.editDictVisible=false;
             },
-            deletePositionApi(index,row){
+            deleteDictApi(index,row){
                 row.deleteFlag=1;
                 this.editForm=row;
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
@@ -256,10 +251,10 @@
                     console.log(response);
                 });
             },
-            activatePositionApi(index,row){
+            activateDictApi(index,row){
                 row.deleteFlag=0;
                 this.editForm=row;
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
