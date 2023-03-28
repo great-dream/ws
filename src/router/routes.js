@@ -13,27 +13,30 @@ const routes = [
     },{
         path:'/',
         name:'wsMain',
-        component:wsMain
-    },{
-        path:'/userManager',
-        name:'userManager',
-        component:userManager
-    },{
-        path:'/positionManager',
-        name:'positionManager',
-        component:positionManager
-    },{
-        path:'/dictManager',
-        name:'dictManager',
-        component:dictManager
-    },{
-        path:'/recordManager',
-        name:'recordManager',
-        component:recordManager
-    },{
-        path:'/stockManager',
-        name:'stockManager',
-        component:stockManager
+        component:wsMain,
+        children:[{
+            path:'/userManager',
+            name:'userManager',
+            component:userManager
+        },{
+            path:'/positionManager',
+            name:'positionManager',
+            component:positionManager
+        },{
+            path:'/dictManager',
+            name:'dictManager',
+            component:dictManager
+        },{
+            path:'/recordManager',
+            name:'recordManager',
+            component:recordManager
+        },{
+            path:'/stockManager',
+            name:'stockManager',
+            component:stockManager
+        }]
     }
+
+
 ]
 export default routes;

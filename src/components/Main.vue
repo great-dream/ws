@@ -9,6 +9,7 @@
                     <router-link to="/dictManager">字典管理</router-link><br>
                     <router-link to="/recordManager">记录管理</router-link><br>
                     <router-link to="/stockManager">库存管理</router-link><br>
+                    <router-link to="" v-on:click.prevent="exitWs()">退出系统</router-link><br>
                 </el-aside>
                 <el-container>
                     <el-main>
@@ -36,6 +37,13 @@
         setup(){
             return {
                 locale:zhCn
+            }
+        },
+        methods:{
+            exitWs(){
+               // sessionStorage.setItem("token",null);
+               sessionStorage.clear();
+               this.$router.push("/wsLogin");
             }
         }
     }

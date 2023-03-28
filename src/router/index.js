@@ -13,10 +13,10 @@ router.beforeEach((to,from,next)=>{
     } else {
         let token = sessionStorage.getItem('token');
         if(token!=null){
-            sessionStorage.clear();
             next();
         } else {
-            next("/wsLogin");
+            sessionStorage.clear();
+           next("/wsLogin");
         }
     }
 })

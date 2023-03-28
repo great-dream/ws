@@ -110,7 +110,7 @@
                     let url = URL.createObjectURL(blob);
                     const link = document.createElement('a'); //创建a标签
                     link.href = url;
-                    link.download = '导出学生信息.xlsx'; //重命名文件
+                    link.download = '操作记录信息.xlsx'; //重命名文件
                     link.click();
                     URL.revokeObjectURL(url);
                     console.log("下载文件" + response);

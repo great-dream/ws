@@ -159,6 +159,8 @@
                     if(response.data.code==200){
                         wsThat.warehouses=response.data.data;
                         console.log(wsThat.warehouses);
+                    } else if(response.data.code==401) {
+                        wsThat.$router.push("/wsLogin");
                     } else {
                         alert("查询失败啦");
                     }
