@@ -32,7 +32,7 @@
                     console.log(response);
                     store.dispatch('SetToken',response.data.token);
                     sessionStorage.setItem('token',response.data.token);
-                    router.push("/main");
+                    router.push("/");
                 }).catch(function (response) {
                     console.log(response);
                 });

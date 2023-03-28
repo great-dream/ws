@@ -7,11 +7,11 @@ import recordManager from '@/components/commodity/RecordManager'
 import stockManager from '@/components/commodity/StockManager'
 const routes = [
     {
-        path:'/login',
+        path:'/wsLogin',
         name:'wsLogin',
         component:wsLogin
     },{
-        path:'/main',
+        path:'/',
         name:'wsMain',
         component:wsMain
     },{
