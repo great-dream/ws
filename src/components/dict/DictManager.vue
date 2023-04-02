@@ -1,21 +1,23 @@
 <template>
+    <el-breadcrumb separator="/" style="margin-bottom: 5px">
+        <el-breadcrumb-item>当前页面:字典管理</el-breadcrumb-item>
+    </el-breadcrumb>
     <div>
         类别：
-        <el-select v-model="category" placeholder="请选择类别" >
+        <el-select v-model="category" placeholder="请选择类别" style="width: 100px">
             <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
             </el-option>
         </el-select>
-        编码：<el-input v-model="code" placeholder="请输入编码" type="text" style="width: 200px"></el-input>
+        编码：<el-input v-model="code" placeholder="请输入编码" type="text" style="width: 100px"></el-input>
         名称：<el-input v-model="name" placeholder="请输入名称" type="text" style="width: 200px"></el-input>
-        <el-button type="primary" v-on:click="queryDicts(this.page,this.size)" style="margin-left: 100px">查询</el-button>
+        <el-button type="primary" v-on:click="queryDicts(1,this.size)" style="margin-left: 100px">查询</el-button>
         <el-button type="primary" v-on:click="clearData()">重置</el-button>
-    </div>
-    <div align="left">
         <el-button type="primary" v-on:click="addDict()">新增字典</el-button>
     </div>
     <div>
-        <el-table :data="dicts" stripe>
-            <el-table-column prop="id" label="唯一键"></el-table-column>
+        <el-table :data="dicts" stripeborder="true" v-loading="loading" element-loading-text="加载中...">
+<!--            <el-table-column prop="id" label="唯一键"></el-table-column>-->
+            <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="category" label="类别">
                 <template #default="scope">
                     {{categoryName(scope.row.category)}}
@@ -29,7 +31,7 @@
                     {{scope.row.deleteFlag?"是":"否"}}
                 </template>
             </el-table-column>
-            <el-table-column prop="" label="操作">
+            <el-table-column prop="" label="操作" width="160px">
                 <template #default="scope">
                     <el-button type="primary" v-on:click="editDict(scope.$index,scope.row)">编辑</el-button>
                     <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activateDictApi(scope.$index,scope.row)">激活</el-button>
@@ -46,6 +48,7 @@
                 :total="total"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
+                style="margin-left: 300px"
         />
 
     </div>
@@ -65,7 +68,7 @@
                 <el-input v-model="addForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
-                <el-input v-model="addForm.remark" autocomplete="off"></el-input>
+                <el-input type="textarea" v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
                 <el-switch v-model="addForm.deleteFlag"></el-switch>
@@ -97,7 +100,7 @@
                 <el-input v-model="editForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
-                <el-input v-model="editForm.remark" autocomplete="off"></el-input>
+                <el-input type="textarea" v-model="editForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
                 <el-switch v-model="editForm.deleteFlag"></el-switch>
@@ -133,7 +136,8 @@
                 editForm:{
                     id:"",category:"",code:"",name:"",remark:"",deleteFlag:""
                 },
-                categorys:[]
+                categorys:[],
+                loading:false
             }
         },
         mounted() {
@@ -145,11 +149,16 @@
                 this.code="";
                 this.name="";
             },
+            indexMethod(index) {
+                return (index+1)+this.size*(this.page-1);
+            },
             queryCategorys(){
                 let wsThat = this;
                 let categoryM="ROOT_TYPE";
                 let params="?category="+categoryM;
+                wsThat.loading=true;
                 axios.get("/api/dictionary/query"+params).then(function (response) {
+                    wsThat.loading=false;
                     console.log(response);
                     if(response.data.code==200){
                         wsThat.categorys=response.data.data;
@@ -159,6 +168,7 @@
                     }
 
                 }).catch(function (response) {
+                    wsThat.loading=false;
                     console.log(response);
                 });
             },

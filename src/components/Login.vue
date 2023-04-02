@@ -1,13 +1,28 @@
 <template>
-    <div>在线仓储系统</div>
-    <div>
-        用户名<input v-model="userId" type="text" />
-    </div>
-    <div>
-        密  码<input v-model="password" type="password" />
-    </div>
-    <div>
-        <input  type="button" value="登  录" v-on:click="login()" />
+<!--    <div>在线仓储系统</div>-->
+<!--    <div>-->
+<!--        用户名<input v-model="userId" type="text" />-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        密  码<input v-model="password" type="password" />-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <input  type="button" value="登  录" v-on:click="login()" />-->
+<!--    </div>-->
+    <div style="margin-top: 200px;text-align: center">
+        <el-form style="width: 300px;margin: auto;border: #409EFF 1px solid;padding: 5px">
+            <el-form-item ><el-text style="margin: auto;font-size:25px"><b>在线仓储系统</b></el-text></el-form-item>
+            <el-form-item label="用户名">
+                <el-input v-model="userId" size="150px"/>
+            </el-form-item>
+            <el-form-item label="密&nbsp&nbsp码">
+                <el-input type="password" v-model="password" show-password size="150px" />
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="login()" style="margin-left: 50px;">登录</el-button>
+                <el-button type="primary" @click="clearData()" style="margin-left: 70px;">重置</el-button>
+            </el-form-item>
+        </el-form>
     </div>
 </template>
 
@@ -35,6 +50,10 @@
                 }).catch(function (response) {
                     console.log(response);
                 });
+            },
+            clearData(){
+                this.userId="",
+                this.password=""
             }
         }
     }

@@ -1,17 +1,19 @@
 <template>
+    <el-breadcrumb separator="/" style="margin-left: 5px;margin-bottom: 5px">
+        <el-breadcrumb-item>当前页面:用户管理</el-breadcrumb-item>
+    </el-breadcrumb>
+<!--    <div style="margin: auto;font-size: 25px">用户管理</div>-->
     <div>
         账号：<el-input v-model="userId" placeholder="请输入账号" type="text" style="width: 200px"></el-input>
         用户名：<el-input v-model="userName" placeholder="请输入用户名" type="text" style="width: 200px"></el-input>
-        <el-button type="primary" v-on:click="queryUsers(this.page,this.size)" style="margin-left: 100px">查询</el-button>
+        <el-button type="primary" v-on:click="queryUsers(1,this.size)" style="margin-left: 100px">查询</el-button>
         <el-button type="primary" v-on:click="clearData()">重置</el-button>
-    </div>
-    <div align="left">
         <el-button type="primary" v-on:click="addUser()">新增用户</el-button>
-<!--        <el-button type="primary" v-on:click="editUser()">新增用户</el-button>-->
     </div>
     <div>
-        <el-table :data="users" stripe>
-            <el-table-column prop="id" label="唯一键"></el-table-column>
+        <el-table :data="users" stripe border="true" v-loading="loading" element-loading-text="加载中..."  max-height="400px">
+<!--            <el-table-column prop="id" label="唯一键"></el-table-column>-->
+            <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="userId" label="账号"></el-table-column>
             <el-table-column prop="password" label="密码"></el-table-column>
             <el-table-column prop="userName" label="用户名"></el-table-column>
@@ -27,11 +29,11 @@
                 </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注"></el-table-column>
-            <el-table-column prop="" label="操作">
+            <el-table-column prop="" label="操作" width="160px">
                 <template #default="scope">
-                    <el-button type="primary" v-on:click="editUser(scope.$index,scope.row)">编辑</el-button>
-                    <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activateUserApi(scope.$index,scope.row)">激活</el-button>
-                    <el-button type="primary"  v-if="!scope.row.deleteFlag" v-on:click="deleteUserApi(scope.$index,scope.row)">删除</el-button>
+                    <el-button type="primary" size="mini" v-on:click="editUser(scope.$index,scope.row)">编辑</el-button>
+                    <el-button type="primary" size="small"  v-if="scope.row.deleteFlag" v-on:click="activateUserApi(scope.$index,scope.row)">激活</el-button>
+                    <el-button type="primary" size="medium"  v-if="!scope.row.deleteFlag" v-on:click="deleteUserApi(scope.$index,scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -44,16 +46,16 @@
                 :total="total"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
+                style="margin-left: 300px"
         />
-
     </div>
     <!-- 新增用户对话框 -->
     <el-dialog title="新增用户" v-model="addUserVisible">
         <el-form :model="addForm">
-            <el-form-item label="账  号">
+            <el-form-item label="账号">
                 <el-input v-model="addForm.userId" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="密  码">
+            <el-form-item label="密码">
                 <el-input v-model="addForm.password" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="用户名">
@@ -65,17 +67,17 @@
             <el-form-item label="管理员">
                 <el-switch v-model="addForm.managerFlag"></el-switch>
             </el-form-item>
-            <el-form-item label="删  除">
-                <el-switch v-model="addForm.deleteFlag"></el-switch>
-            </el-form-item>
-            <el-form-item label="备      注">
-                <el-input v-model="addForm.remarks" autocomplete="off"></el-input>
+<!--            <el-form-item label="删除">-->
+<!--                <el-switch v-model="addForm.deleteFlag"></el-switch>-->
+<!--            </el-form-item>-->
+            <el-form-item label="备注">
+                <el-input type="textarea" v-model="addForm.remarks" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button v-on:click="addUserVisible=false">取 消</el-button>
-                <el-button type="primary" v-on:click="addUserApi()">确 定</el-button>
+                <el-button v-on:click="addUserVisible=false">取消</el-button>
+                <el-button type="primary" v-on:click="addUserApi()">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -100,11 +102,11 @@
             <el-form-item label="管理员">
                 <el-switch v-model="editForm.managerFlag"></el-switch>
             </el-form-item>
-            <el-form-item label="删  除">
+            <el-form-item label="删除">
                 <el-switch v-model="editForm.deleteFlag"></el-switch>
             </el-form-item>
-            <el-form-item label="备      注">
-                <el-input v-model="editForm.remarks" autocomplete="off"></el-input>
+            <el-form-item label="备注">
+                <el-input type="textarea" v-model="editForm.remarks" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -135,7 +137,8 @@
                 editUserVisible:false,
                 editForm:{
                     id:"",userId:"",password:"",userName:"",phoneNumber:"",managerFlag:false,deleteFlag:false,remarks:""
-                }
+                },
+                loading:false
             }
         },
         methods:{
@@ -143,11 +146,16 @@
                 this.userId="";
                 this.userName="";
             },
+            indexMethod(index) {
+                return (index+1)+this.size*(this.page-1);
+            },
             queryUsers(page,size){
                // this.$message({message:"info提示",type:"info"});
                 let wsThat = this;
                 let params="?userId="+wsThat.userId+"&userName="+wsThat.userName+"&page="+page+"&size="+size;
+                wsThat.loading=true;
                 axios.get("/api/user/query"+params).then(function (response) {
+                    wsThat.loading=false;
                     console.log(response);
                     if(response.data.code==200){
                         wsThat.users=response.data.data.data;
@@ -161,6 +169,7 @@
 
                 }).catch(function (response) {
                     console.log(response);
+                    wsThat.loading=false;
                 });
             },
             handleSizeChange(newSize){

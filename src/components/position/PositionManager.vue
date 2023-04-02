@@ -1,4 +1,7 @@
 <template>
+    <el-breadcrumb separator="/" style="margin-bottom: 5px">
+        <el-breadcrumb-item>当前页面:仓位管理</el-breadcrumb-item>
+    </el-breadcrumb>
     <div>
         仓库：
         <el-select v-model="warehouse" placeholder="请选择仓库" >
@@ -6,16 +9,14 @@
             </el-option>
         </el-select>
         仓位：<el-input v-model="position" placeholder="请输入仓位" type="text" style="width: 200px"></el-input>
-        <el-button type="primary" v-on:click="queryPositions(this.page,this.size)" style="margin-left: 100px">查询</el-button>
+        <el-button type="primary" v-on:click="queryPositions(1,this.size)" style="margin-left: 100px">查询</el-button>
         <el-button type="primary" v-on:click="clearData()">重置</el-button>
-    </div>
-    <div align="left">
         <el-button type="primary" v-on:click="addPosition()">新增仓位</el-button>
-<!--        <el-button type="primary" v-on:click="editPosition()">新增用户</el-button>-->
     </div>
     <div>
-        <el-table :data="positions" stripe>
-            <el-table-column prop="id" label="唯一键"></el-table-column>
+        <el-table :data="positions" stripe border="true" v-loading="loading" element-loading-text="加载中...">
+<!--            <el-table-column prop="id" label="唯一键"></el-table-column>-->
+            <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="warehouse" label="仓库">
                 <template #default="scope">
                     {{warehouseName(scope.row.warehouse)}}
@@ -30,7 +31,7 @@
                     {{scope.row.deleteFlag?"是":"否"}}
                 </template>
             </el-table-column>
-            <el-table-column prop="" label="操作">
+            <el-table-column prop="" label="操作" width="160px">
                 <template #default="scope">
                     <el-button type="primary" v-on:click="editPosition(scope.$index,scope.row)">编辑</el-button>
                     <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activatePositionApi(scope.$index,scope.row)">激活</el-button>
@@ -47,6 +48,7 @@
                 :total="total"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
+                style="margin-left: 300px"
         />
 
     </div>
@@ -69,7 +71,7 @@
                 <el-input v-model="addForm.number" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
-                <el-input v-model="addForm.remark" autocomplete="off"></el-input>
+                <el-input type="textarea" v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删除">
                 <el-switch v-model="addForm.deleteFlag"></el-switch>
@@ -104,7 +106,7 @@
                 <el-input v-model="editForm.number" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备  注">
-                <el-input v-model="editForm.remark" autocomplete="off"></el-input>
+                <el-input type="textarea" v-model="editForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
                 <el-switch v-model="editForm.deleteFlag"></el-switch>
@@ -139,7 +141,8 @@
                 editForm:{
                     id:"",warehouse:"",cabinet:"",position:"",number:"",remark:""
                 },
-                warehouses:[]
+                warehouses:[],
+                loading:false
             }
         },
         mounted() {
@@ -149,6 +152,9 @@
             clearData(){
                 this.warehouse="";
                 this.position="";
+            },
+            indexMethod(index) {
+                return (index+1)+this.size*(this.page-1);
             },
             queryWarehoses(){
                 let wsThat = this;
@@ -181,7 +187,9 @@
                // this.$message({message:"info提示",type:"info"});
                 let wsThat = this;
                 let params="?warehouse="+wsThat.warehouse+"&position="+wsThat.position+"&page="+page+"&size="+size;
+                wsThat.loading=true;
                 axios.get("/api/position/query"+params).then(function (response) {
+                    wsThat.loading=false;
                     console.log(response);
                     if(response.data.code==200){
                         wsThat.positions=response.data.data.data;
@@ -194,6 +202,7 @@
                     }
 
                 }).catch(function (response) {
+                    wsThat.loading=false;
                     console.log(response);
                 });
             },
