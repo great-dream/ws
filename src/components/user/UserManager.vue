@@ -29,11 +29,11 @@
                 </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注"></el-table-column>
-            <el-table-column prop="" label="操作" width="160px">
+            <el-table-column prop="" label="操作" width="140px">
                 <template #default="scope">
-                    <el-button type="primary" size="mini" v-on:click="editUser(scope.$index,scope.row)">编辑</el-button>
+                    <el-button type="primary" size="small" v-on:click="editUser(scope.$index,scope.row)">编辑</el-button>
                     <el-button type="primary" size="small"  v-if="scope.row.deleteFlag" v-on:click="activateUserApi(scope.$index,scope.row)">激活</el-button>
-                    <el-button type="primary" size="medium"  v-if="!scope.row.deleteFlag" v-on:click="deleteUserApi(scope.$index,scope.row)">删除</el-button>
+                    <el-button type="primary" size="small"  v-if="!scope.row.deleteFlag" v-on:click="deleteUserApi(scope.$index,scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -166,7 +166,7 @@
                         wsThat.page=response.data.data.page;
                         wsThat.size=response.data.data.size;
                         wsThat.total=response.data.data.total;
-                        console.log(this.users);
+                        console.log(wsThat.users);
                     } else {
                         alert("查询失败啦");
                     }
@@ -191,19 +191,19 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/user/addUser",this.addForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/user/addUser",thisWs.addForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryUsers(this.page,this.size);//添加成功后，刷新表格数据
+                                thisWs.addUserVisible=false;
+                                thisWs.queryUsers(thisWs.page,thisWs.size);//添加成功后，刷新表格数据
                             } else {
                                 alert(response.data.msg);
                             }
-
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.addUserVisible=false;
                     }
                 })
             },
@@ -222,11 +222,13 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/user/editUser",this.editForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/user/editUser",thisWs.editForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryUsers(this.page,this.size);//修改成功后，刷新表格数据
+                                thisWs.editUserVisible=false;
+                                thisWs.queryUsers(thisWs.page,thisWs.size);//修改成功后，刷新表格数据
                             } else {
                                 alert(response.data.msg);
                             }
@@ -234,18 +236,18 @@
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.editUserVisible=false;
                     }
                 })
             },
             deleteUserApi(index,row){
                 row.deleteFlag=1;
                 this.editForm=row;
-                axios.post("/api/user/editUser",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/user/editUser",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryUsers(this.page,this.size);//逻辑删除成功后，刷新表格数据
+                        thisWs.queryUsers(thisWs.page,thisWs.size);//逻辑删除成功后，刷新表格数据
                     } else {
                         alert(response.data.msg);
                     }
@@ -257,11 +259,12 @@
             activateUserApi(index,row){
                 row.deleteFlag=0;
                 this.editForm=row;
-                axios.post("/api/user/editUser",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/user/editUser",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryUsers(this.page,this.size);//激活成功后，刷新表格数据
+                        thisWs.queryUsers(thisWs.page,thisWs.size);//激活成功后，刷新表格数据
                     } else {
                         alert(response.data.msg);
                     }

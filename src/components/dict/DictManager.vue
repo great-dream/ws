@@ -31,11 +31,11 @@
                     {{scope.row.deleteFlag?"是":"否"}}
                 </template>
             </el-table-column>
-            <el-table-column prop="" label="操作" width="160px">
+            <el-table-column prop="" label="操作" width="140px">
                 <template #default="scope">
-                    <el-button type="primary" v-on:click="editDict(scope.$index,scope.row)">编辑</el-button>
-                    <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activateDictApi(scope.$index,scope.row)">激活</el-button>
-                    <el-button type="primary"  v-if="!scope.row.deleteFlag" v-on:click="deleteDictApi(scope.$index,scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" v-on:click="editDict(scope.$index,scope.row)">编辑</el-button>
+                    <el-button type="primary" size="small"  v-if="scope.row.deleteFlag" v-on:click="activateDictApi(scope.$index,scope.row)">激活</el-button>
+                    <el-button type="primary" size="small"  v-if="!scope.row.deleteFlag" v-on:click="deleteDictApi(scope.$index,scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -139,7 +139,7 @@
                 categorys:[],
                 loading:false,
                 commonRules: {
-                    category:[{ required: true, message: '类别必选', trigger: 'blur' }],
+                    category:[{ required: true, message: '类别必选', trigger: ['blur','change'] }],
                     code:[{ required: true, message: '编码必填', trigger: 'blur' }],
                     name:[{ required: true, message: '名称必填', trigger: 'blur' }]
                 }
@@ -196,7 +196,7 @@
                         wsThat.page=response.data.data.page;
                         wsThat.size=response.data.data.size;
                         wsThat.total=response.data.data.total;
-                        console.log(this.dicts);
+                        console.log(wsThat.dicts);
                     } else {
                         alert("查询失败啦");
                     }
@@ -220,19 +220,19 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/dictionary/addDict",this.addForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/dictionary/addDict",thisWs.addForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryDicts(this.page,this.size);
+                                thisWs.addDictVisible=false;
+                                thisWs.queryDicts(thisWs.page,thisWs.size);
                             } else {
                                 alert(response.data.msg);
                             }
-
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.addDictVisible=false;
                     }
                 })
             },
@@ -251,34 +251,34 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/dictionary/editDict",thisWs.editForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryDicts(this.page,this.size);
+                                thisWs.editDictVisible=false;
+                                thisWs.queryDicts(thisWs.page,thisWs.size);
                             } else {
                                 alert(response.data.msg);
                             }
-
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.editDictVisible=false;
                     }
                 })
             },
             deleteDictApi(index,row){
                 row.deleteFlag=1;
                 this.editForm=row;
-                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/dictionary/editDict",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryDicts(this.page,this.size);
+                        thisWs.queryDicts(thisWs.page,thisWs.size);
                     } else {
                         alert(response.data.msg);
                     }
-
                 }).catch(function (response) {
                     console.log(response);
                 });
@@ -286,15 +286,15 @@
             activateDictApi(index,row){
                 row.deleteFlag=0;
                 this.editForm=row;
-                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/dictionary/editDict",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryDicts(this.page,this.size);
+                        thisWs.queryDicts(thisWs.page,thisWs.size);
                     } else {
                         alert(response.data.msg);
                     }
-
                 }).catch(function (response) {
                     console.log(response);
                 });

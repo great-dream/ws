@@ -31,11 +31,11 @@
                     {{scope.row.deleteFlag?"是":"否"}}
                 </template>
             </el-table-column>
-            <el-table-column prop="" label="操作" width="160px">
+            <el-table-column prop="" label="操作" width="140px">
                 <template #default="scope">
-                    <el-button type="primary" v-on:click="editPosition(scope.$index,scope.row)">编辑</el-button>
-                    <el-button type="primary"  v-if="scope.row.deleteFlag" v-on:click="activatePositionApi(scope.$index,scope.row)">激活</el-button>
-                    <el-button type="primary"  v-if="!scope.row.deleteFlag" v-on:click="deletePositionApi(scope.$index,scope.row)">删除</el-button>
+                    <el-button type="primary" size="small" v-on:click="editPosition(scope.$index,scope.row)">编辑</el-button>
+                    <el-button type="primary" size="small"  v-if="scope.row.deleteFlag" v-on:click="activatePositionApi(scope.$index,scope.row)">激活</el-button>
+                    <el-button type="primary" size="small"  v-if="!scope.row.deleteFlag" v-on:click="deletePositionApi(scope.$index,scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -200,7 +200,7 @@
                         wsThat.page=response.data.data.page;
                         wsThat.size=response.data.data.size;
                         wsThat.total=response.data.data.total;
-                        console.log(this.positions);
+                        console.log(wsThat.positions);
                     } else {
                         alert("查询失败啦");
                     }
@@ -225,19 +225,19 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/position/addPosition",this.addForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/position/addPosition",thisWs.addForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryPositions(this.page,this.size);
+                                thisWs.addPositionVisible=false;
+                                thisWs.queryPositions(thisWs.page,thisWs.size);
                             } else {
                                 alert(response.data.msg);
                             }
-
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.addPositionVisible=false;
                     }
                 })
             },
@@ -256,31 +256,32 @@
                         this.$message.warning('请调整标红数据后再请求');
                         return false;
                     } else {
-                        axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                        let thisWs=this;
+                        axios.post("/api/position/editPosition",thisWs.editForm).then(function (response) {
                             console.log(response);
                             if(response.data.code==200){
                                 alert(response.data.msg);
-                                this.queryPositions(this.page,this.size);
+                                thisWs.editPositionVisible=false;
+                                thisWs.queryPositions(thisWs.page,thisWs.size);
                             } else {
                                 alert(response.data.msg);
-                            }
 
+                            }
                         }).catch(function (response) {
                             console.log(response);
                         });
-                        this.editPositionVisible=false;
                     }
                 })
-
             },
             deletePositionApi(index,row){
                 row.deleteFlag=1;
                 this.editForm=row;
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/position/editPosition",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryPositions(this.page,this.size);
+                        thisWs.queryPositions(thisWs.page,thisWs.size);
                     } else {
                         alert(response.data.msg);
                     }
@@ -292,15 +293,15 @@
             activatePositionApi(index,row){
                 row.deleteFlag=0;
                 this.editForm=row;
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                let thisWs=this;
+                axios.post("/api/position/editPosition",thisWs.editForm).then(function (response) {
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
-                        this.queryPositions(this.page,this.size);
+                        thisWs.queryPositions(thisWs.page,thisWs.size);
                     } else {
                         alert(response.data.msg);
                     }
-
                 }).catch(function (response) {
                     console.log(response);
                 });
