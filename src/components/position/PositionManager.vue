@@ -54,8 +54,8 @@
     </div>
     <!-- 新增仓位对话框 -->
     <el-dialog title="新增仓位" v-model="addPositionVisible">
-        <el-form :model="addForm">
-            <el-form-item label="仓库">
+        <el-form :model="addForm" :rules="commonRules" ref="addForm">
+            <el-form-item label="仓库" prop="warehouse" :required="true">
                 <el-select v-model="addForm.warehouse" placeholder="请选择仓库" >
                     <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
                     </el-option>
@@ -64,7 +64,7 @@
 <!--            <el-form-item label="仓柜">-->
 <!--                <el-input v-model="addForm.cabinet" autocomplete="off"></el-input>-->
 <!--            </el-form-item>-->
-            <el-form-item label="仓位">
+            <el-form-item label="仓位" prop="position" :required="true">
                 <el-input v-model="addForm.position" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="数量">
@@ -86,11 +86,11 @@
     </el-dialog>
     <!-- 编辑用户对话框 -->
     <el-dialog title="修改仓位" v-model="editPositionVisible">
-        <el-form :model="editForm">
+        <el-form :model="editForm" :rules="commonRules" ref="editForm">
             <el-form-item label="id">
                 <el-input v-model="editForm.id" disabled="false"></el-input>
             </el-form-item>
-            <el-form-item label="仓  库">
+            <el-form-item label="仓  库" prop="warehouse" :required="true">
                 <el-select v-model="editForm.warehouse" placeholder="请选择仓库" >
                     <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
                     </el-option>
@@ -99,7 +99,7 @@
 <!--            <el-form-item label="仓柜">-->
 <!--                <el-input v-model="editForm.cabinet" autocomplete="off"></el-input>-->
 <!--            </el-form-item>-->
-            <el-form-item label="仓  位">
+            <el-form-item label="仓  位" prop="position" :required="true">
                 <el-input v-model="editForm.position" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="数  量">
@@ -142,7 +142,11 @@
                     id:"",warehouse:"",cabinet:"",position:"",number:"",remark:""
                 },
                 warehouses:[],
-                loading:false
+                loading:false,
+                commonRules: {
+                    warehouse:[{ required: true, message: '仓库必选', trigger: ['blur','change'] }],
+                    position:[{ required: true, message: '仓位必填', trigger: 'blur' }]
+                }
             }
         },
         mounted() {
@@ -216,18 +220,26 @@
                 this.addPositionVisible=true;
             },
             addPositionApi(){
-                axios.post("/api/position/addPosition",this.addForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.addForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/position/addPosition",this.addForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryPositions(this.page,this.size);
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.addPositionVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.addPositionVisible=false;
+                    }
+                })
             },
             // editPosition(){
             //     this.editPositionVisible=true;
@@ -239,18 +251,27 @@
 
             },
             editPositionApi(){
-                axios.post("/api/position/editPosition",this.editForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.editForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/position/editPosition",this.editForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryPositions(this.page,this.size);
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.editPositionVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.editPositionVisible=false;
+                    }
+                })
+
             },
             deletePositionApi(index,row){
                 row.deleteFlag=1;
@@ -259,6 +280,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryPositions(this.page,this.size);
                     } else {
                         alert(response.data.msg);
                     }
@@ -274,6 +296,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryPositions(this.page,this.size);
                     } else {
                         alert(response.data.msg);
                     }

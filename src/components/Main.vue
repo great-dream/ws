@@ -9,7 +9,9 @@
                     <router-link to="/dictManager">字典管理</router-link><br>
                     <router-link to="/recordManager">记录管理</router-link><br>
                     <router-link to="/stockManager">库存管理</router-link><br>
-                    <router-link to="" v-on:click.prevent="exitWs()">退出系统</router-link><br>
+                    <br><br><br><br><br><br><br><br><br><br>
+                    <br><br><br><br><br><br><br><br>
+                    <router-link to="" v-on:click.prevent="exitWs()">退出系统</router-link>
                 </el-aside>
                 <el-container  style="margin:0;padding:0;height: 500px">
                     <el-main style="margin:0;padding:0;height: 500px">

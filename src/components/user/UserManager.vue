@@ -51,11 +51,11 @@
     </div>
     <!-- 新增用户对话框 -->
     <el-dialog title="新增用户" v-model="addUserVisible">
-        <el-form :model="addForm">
-            <el-form-item label="账号">
+        <el-form :model="addForm" :rules="commonRules" ref="addForm">
+            <el-form-item label="账号" prop="userId" :required="true">
                 <el-input v-model="addForm.userId" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="密码">
+            <el-form-item label="密码" prop="password" :required="true">
                 <el-input v-model="addForm.password" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="用户名">
@@ -83,14 +83,14 @@
     </el-dialog>
     <!-- 编辑用户对话框 -->
     <el-dialog title="修改用户" v-model="editUserVisible">
-        <el-form :model="editForm">
+        <el-form :model="editForm" :rules="commonRules" ref="editForm">
             <el-form-item label="id">
                 <el-input v-model="editForm.id" disabled="false"></el-input>
             </el-form-item>
-            <el-form-item label="账  号">
+            <el-form-item label="账号"  prop="userId" :required="true">
                 <el-input v-model="editForm.userId" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="密  码">
+            <el-form-item label="密码" prop="password" :required="true">
                 <el-input v-model="editForm.password" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="用户名">
@@ -138,7 +138,11 @@
                 editForm:{
                     id:"",userId:"",password:"",userName:"",phoneNumber:"",managerFlag:false,deleteFlag:false,remarks:""
                 },
-                loading:false
+                loading:false,
+                commonRules: {
+                    userId:[{ required: true, message: '账户必填', trigger: 'blur' }],
+                    password:[{ required: true, message: '密码必填', trigger: 'blur' }]
+                }
             }
         },
         methods:{
@@ -182,18 +186,26 @@
                 this.addUserVisible=true;
             },
             addUserApi(){
-                axios.post("/api/user/addUser",this.addForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.addForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/user/addUser",this.addForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryUsers(this.page,this.size);//添加成功后，刷新表格数据
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.addUserVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.addUserVisible=false;
+                    }
+                })
             },
             // editUser(){
             //     this.editUserVisible=true;
@@ -205,18 +217,26 @@
 
             },
             editUserApi(){
-                axios.post("/api/user/editUser",this.editForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.editForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/user/editUser",this.editForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryUsers(this.page,this.size);//修改成功后，刷新表格数据
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.editUserVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.editUserVisible=false;
+                    }
+                })
             },
             deleteUserApi(index,row){
                 row.deleteFlag=1;
@@ -225,6 +245,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryUsers(this.page,this.size);//逻辑删除成功后，刷新表格数据
                     } else {
                         alert(response.data.msg);
                     }
@@ -240,6 +261,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryUsers(this.page,this.size);//激活成功后，刷新表格数据
                     } else {
                         alert(response.data.msg);
                     }

@@ -54,17 +54,17 @@
     </div>
     <!-- 新增字典对话框 -->
     <el-dialog title="新增字典" v-model="addDictVisible">
-        <el-form :model="addForm">
-            <el-form-item label="类别">
+        <el-form :model="addForm" :rules="commonRules" ref="addForm">
+            <el-form-item label="类别" prop="category" :required="true">
                 <el-select v-model="addForm.category" placeholder="请选择类别" >
                     <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="编码">
+            <el-form-item label="编码" prop="code" :required="true">
                 <el-input v-model="addForm.code" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" prop="name" :required="true">
                 <el-input v-model="addForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
@@ -83,20 +83,20 @@
     </el-dialog>
     <!-- 编辑字典对话框 -->
     <el-dialog title="修改字典" v-model="editDictVisible">
-        <el-form :model="editForm">
+        <el-form :model="editForm" :rules="commonRules" ref="editForm">
             <el-form-item label="id">
                 <el-input v-model="editForm.id" disabled="false"></el-input>
             </el-form-item>
-            <el-form-item label="类别">
+            <el-form-item label="类别" prop="category" :required="true">
                 <el-select v-model="editForm.category" placeholder="请选择类别" >
                     <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="编码">
+            <el-form-item label="编码" prop="code" :required="true">
                 <el-input v-model="editForm.code" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" prop="name" :required="true">
                 <el-input v-model="editForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注">
@@ -137,7 +137,12 @@
                     id:"",category:"",code:"",name:"",remark:"",deleteFlag:""
                 },
                 categorys:[],
-                loading:false
+                loading:false,
+                commonRules: {
+                    category:[{ required: true, message: '类别必选', trigger: 'blur' }],
+                    code:[{ required: true, message: '编码必填', trigger: 'blur' }],
+                    name:[{ required: true, message: '名称必填', trigger: 'blur' }]
+                }
             }
         },
         mounted() {
@@ -210,18 +215,26 @@
                 this.addDictVisible=true;
             },
             addDictApi(){
-                axios.post("/api/dictionary/addDict",this.addForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.addForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/dictionary/addDict",this.addForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryDicts(this.page,this.size);
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.addDictVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.addDictVisible=false;
+                    }
+                })
             },
             // editDict(){
             //     this.editDictVisible=true;
@@ -233,18 +246,26 @@
 
             },
             editDictApi(){
-                axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
-                    console.log(response);
-                    if(response.data.code==200){
-                        alert(response.data.msg);
+                this.$refs.editForm.validate((valid) => {
+                    if(!valid) {
+                        this.$message.warning('请调整标红数据后再请求');
+                        return false;
                     } else {
-                        alert(response.data.msg);
-                    }
+                        axios.post("/api/dictionary/editDict",this.editForm).then(function (response) {
+                            console.log(response);
+                            if(response.data.code==200){
+                                alert(response.data.msg);
+                                this.queryDicts(this.page,this.size);
+                            } else {
+                                alert(response.data.msg);
+                            }
 
-                }).catch(function (response) {
-                    console.log(response);
-                });
-                this.editDictVisible=false;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                        this.editDictVisible=false;
+                    }
+                })
             },
             deleteDictApi(index,row){
                 row.deleteFlag=1;
@@ -253,6 +274,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryDicts(this.page,this.size);
                     } else {
                         alert(response.data.msg);
                     }
@@ -268,6 +290,7 @@
                     console.log(response);
                     if(response.data.code==200){
                         alert(response.data.msg);
+                        this.queryDicts(this.page,this.size);
                     } else {
                         alert(response.data.msg);
                     }
