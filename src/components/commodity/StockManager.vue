@@ -99,7 +99,7 @@
                 wsThat.startTime=this.dtRange[0];
                 wsThat.endTime=this.dtRange[1];
                 let params="?startTime="+wsThat.startTime+"&endTime="+wsThat.endTime;
-                axios.get("/api/commodity/exportStockExcel"+params,{headers:{'Content-Type':'application/json; charset=UTF-8'},responseType:"blob"}).then(function (response) {
+                axios.get("/api/commodity/exportStockExcel"+params,{headers:{'Content-Type':'application/json; charset=UTF-8'},responseType:"blob",timeout:60000}).then(function (response) {
                     console.log(response);
                     let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'});
                     let url = URL.createObjectURL(blob);

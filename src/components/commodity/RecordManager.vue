@@ -139,7 +139,7 @@
                 wsThat.startTime=this.dtRange[0];
                 wsThat.endTime=this.dtRange[1];
                 let params="?startTime="+wsThat.startTime+"&endTime="+wsThat.endTime;
-                axios.get("/api/record/exportExcel"+params,{headers:{'Content-Type':'application/json; charset=UTF-8'},responseType:"blob"}).then(function (response) {
+                axios.get("/api/record/exportExcel"+params,{headers:{'Content-Type':'application/json; charset=UTF-8'},responseType:"blob",timeout:60000}).then(function (response) {
                     console.log(response);
                     // if(response.data.code==200){
                     //     wsThat.records=response.data.data.data;

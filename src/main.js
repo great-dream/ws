@@ -5,6 +5,7 @@ import router from "@/router";
 import ElementPlus from "element-plus";
 import 'element-plus/dist/index.css'
 import axios from "axios";
+axios.defaults.timeout=6000;
 axios.interceptors.request.use(config=>{
     config.headers['token']=sessionStorage.getItem('token');
     return config;
