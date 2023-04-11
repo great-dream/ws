@@ -85,11 +85,11 @@
         </template>
     </el-dialog>
     <!-- 编辑用户对话框 -->
-    <el-dialog title="修改仓位" v-model="editPositionVisible">
+    <el-dialog title="编辑仓位" v-model="editPositionVisible">
         <el-form :model="editForm" :rules="commonRules" ref="editForm">
-            <el-form-item label="id">
-                <el-input v-model="editForm.id" disabled="false"></el-input>
-            </el-form-item>
+<!--            <el-form-item label="id">-->
+<!--                <el-input v-model="editForm.id" disabled="false"></el-input>-->
+<!--            </el-form-item>-->
             <el-form-item label="仓  库" prop="warehouse" :required="true">
                 <el-select v-model="editForm.warehouse" placeholder="请选择仓库" >
                     <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">

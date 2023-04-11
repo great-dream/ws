@@ -70,9 +70,9 @@
             <el-form-item label="备注">
                 <el-input type="textarea" v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="删  除">
-                <el-switch v-model="addForm.deleteFlag"></el-switch>
-            </el-form-item>
+<!--            <el-form-item label="删  除">-->
+<!--                <el-switch v-model="addForm.deleteFlag"></el-switch>-->
+<!--            </el-form-item>-->
         </el-form>
         <template #footer>
             <span class="dialog-footer">
@@ -82,11 +82,11 @@
         </template>
     </el-dialog>
     <!-- 编辑字典对话框 -->
-    <el-dialog title="修改字典" v-model="editDictVisible">
+    <el-dialog title="编辑字典" v-model="editDictVisible">
         <el-form :model="editForm" :rules="commonRules" ref="editForm">
-            <el-form-item label="id">
-                <el-input v-model="editForm.id" disabled="false"></el-input>
-            </el-form-item>
+<!--            <el-form-item label="id">-->
+<!--                <el-input v-model="editForm.id" disabled="false"></el-input>-->
+<!--            </el-form-item>-->
             <el-form-item label="类别" prop="category" :required="true">
                 <el-select v-model="editForm.category" placeholder="请选择类别" >
                     <el-option v-for="cat in categorys" :key="cat.code" :value="cat.code" :label="cat.name">

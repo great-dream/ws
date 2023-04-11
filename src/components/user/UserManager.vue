@@ -82,11 +82,11 @@
         </template>
     </el-dialog>
     <!-- 编辑用户对话框 -->
-    <el-dialog title="修改用户" v-model="editUserVisible">
+    <el-dialog title="编辑用户" v-model="editUserVisible">
         <el-form :model="editForm" :rules="commonRules" ref="editForm">
-            <el-form-item label="id">
-                <el-input v-model="editForm.id" disabled="false"></el-input>
-            </el-form-item>
+<!--            <el-form-item label="id">-->
+<!--                <el-input v-model="editForm.id" disabled="false"></el-input>-->
+<!--            </el-form-item>-->
             <el-form-item label="账号"  prop="userId" :required="true">
                 <el-input v-model="editForm.userId" autocomplete="off"></el-input>
             </el-form-item>

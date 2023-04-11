@@ -3,8 +3,13 @@
         <el-breadcrumb-item>当前页面:库存管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div>
-        时间：<el-date-picker v-model="dtRange" type="datetimerange" start-placeholder="开始时间"
-                           end-placeholder="开始时间" value-format="YYYY-MM-DD HH:mm:ss" />
+        商品名：<el-input v-model="commodityName" placeholder="请输入商品名" type="text" style="width: 200px"></el-input>
+        仓库：
+        <el-select v-model="warehouse" placeholder="请选择仓库" style="width: 100px">
+            <el-option v-for="wh in warehouses" :key="wh.code" :value="wh.code" :label="wh.name">
+            </el-option>
+        </el-select>
+        仓位：<el-input v-model="position" placeholder="请输入仓位" type="text" style="width: 100px"></el-input>
         <el-button type="primary" v-on:click="queryStocks(1,this.size)" style="margin-left: 100px">查询</el-button>
         <el-button type="primary" v-on:click="clearData()">重置</el-button>
         <el-button type="primary" v-on:click="exportExcel()">导出Excel</el-button>
@@ -40,15 +45,19 @@
         name: "StockManager",
         data(){
             return {
-                startTime:"",
-                endTime:"",
-                dtRange:"",
+                commodityName:"",
+                warehouse:"",
+                position:"",
                 page:1,
                 size:20,
                 total:0,
                 stocks:[],
+                warehouses:[],
                 loading:false
             }
+        },
+        mounted() {
+            this.queryWarehoses();
         },
         methods:{
             clearData(){
@@ -57,11 +66,28 @@
             indexMethod(index) {
                 return (index+1)+this.size*(this.page-1);
             },
+            queryWarehoses(){
+                let wsThat = this;
+                let categoryM="WAREHOUSE";
+                let params="?category="+categoryM;
+                axios.get("/api/dictionary/query"+params).then(function (response) {
+                    console.log(response);
+                    if(response.data.code==200){
+                        wsThat.warehouses=response.data.data;
+                        console.log(wsThat.warehouses);
+                    } else if(response.data.code==401) {
+                        wsThat.$router.push("/wsLogin");
+                    } else {
+                        alert("查询失败啦");
+                    }
+
+                }).catch(function (response) {
+                    console.log(response);
+                });
+            },
             queryStocks(page,size){
                 let wsThat = this;
-                wsThat.startTime=wsThat.handleUndefined(this.dtRange[0]);
-                wsThat.endTime=wsThat.handleUndefined(this.dtRange[1]);
-                let params="?startTime="+wsThat.startTime+"&endTime="+wsThat.endTime+"&page="+page+"&size="+size;
+                let params="?commodityName="+wsThat.commodityName+"&warehouse="+wsThat.warehouse+"&position="+wsThat.position+"&page="+page+"&size="+size;
                 wsThat.loading=true;
                 axios.get("/api/commodity/queryStock"+params).then(function (response) {
                     wsThat.loading=false;
@@ -96,9 +122,7 @@
             },
             exportExcel(){
                 let wsThat = this;
-                wsThat.startTime=this.dtRange[0];
-                wsThat.endTime=this.dtRange[1];
-                let params="?startTime="+wsThat.startTime+"&endTime="+wsThat.endTime;
+                let params="?commodityName="+wsThat.commodityName+"&warehouse="+wsThat.warehouse+"&position="+wsThat.position;
                 axios.get("/api/commodity/exportStockExcel"+params,{headers:{'Content-Type':'application/json; charset=UTF-8'},responseType:"blob",timeout:60000}).then(function (response) {
                     console.log(response);
                     let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'});
