@@ -67,10 +67,10 @@
             <el-form-item label="仓位" prop="position" :required="true">
                 <el-input v-model="addForm.position" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="数量">
+            <el-form-item label="数量" prop="number" :required="false">
                 <el-input v-model="addForm.number" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remark" :required="false">
                 <el-input type="textarea" v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删除">
@@ -102,10 +102,10 @@
             <el-form-item label="仓  位" prop="position" :required="true">
                 <el-input v-model="editForm.position" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="数  量">
+            <el-form-item label="数  量" prop="number" :required="false">
                 <el-input v-model="editForm.number" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备  注">
+            <el-form-item label="备  注" prop="remark" :required="false">
                 <el-input type="textarea" v-model="editForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
@@ -145,7 +145,11 @@
                 loading:false,
                 commonRules: {
                     warehouse:[{ required: true, message: '仓库必选', trigger: ['blur','change'] }],
-                    position:[{ required: true, message: '仓位必填', trigger: 'blur' }]
+                    position:[{ required: true, message: '仓位必填', trigger: 'blur' }
+                     ,{ required: false, max:255,message: '仓位不能超过255字', trigger: 'blur' }],
+                    number:[{required:false,message:'数量必须是正整数',pattern:/^[1-9]\d*$/,trigger:'blur'}
+                     ,{ required: false, max:5,message: '数量不能超过5位', trigger: 'blur' }],
+                    remark:[{ required: false, max:255,message: '备注不能超过255字', trigger: 'blur' }]
                 }
             }
         },

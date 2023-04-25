@@ -58,10 +58,10 @@
             <el-form-item label="密码" prop="password" :required="true">
                 <el-input v-model="addForm.password" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="用户名">
+            <el-form-item label="用户名" prop="userName" :required="false">
                 <el-input v-model="addForm.userName" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="手机号">
+            <el-form-item label="手机号" prop="phoneNumber" :required="false">
                 <el-input v-model="addForm.phoneNumber" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="管理员">
@@ -70,7 +70,7 @@
 <!--            <el-form-item label="删除">-->
 <!--                <el-switch v-model="addForm.deleteFlag"></el-switch>-->
 <!--            </el-form-item>-->
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remarks" :required="false">
                 <el-input type="textarea" v-model="addForm.remarks" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
@@ -93,10 +93,10 @@
             <el-form-item label="密码" prop="password" :required="true">
                 <el-input v-model="editForm.password" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="用户名">
+            <el-form-item label="用户名" prop="userName" :required="false">
                 <el-input v-model="editForm.userName" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="手机号">
+            <el-form-item label="手机号" prop="phoneNumber" :required="false">
                 <el-input v-model="editForm.phoneNumber" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="管理员">
@@ -105,7 +105,7 @@
             <el-form-item label="删除">
                 <el-switch v-model="editForm.deleteFlag"></el-switch>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="备注"  prop="remarks" :required="false">
                 <el-input type="textarea" v-model="editForm.remarks" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
@@ -140,8 +140,13 @@
                 },
                 loading:false,
                 commonRules: {
-                    userId:[{ required: true, message: '账户必填', trigger: 'blur' }],
-                    password:[{ required: true, message: '密码必填', trigger: 'blur' }]
+                    userId:[{ required: true, message: '账户必填', trigger: 'blur' }
+                     ,{ required: false, max:255,message: '账户不能超过255字', trigger: 'blur' }],
+                    password:[{ required: true, message: '密码必填', trigger: 'blur' }
+                     ,{message: '请输入6-20位英文字母、数字或者符号（除空格），且字母、数字和标点符号至少包含两种',pattern:/^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,20}$/,trigger: 'blur'}],
+                    userName:[{ required: false, max:255,message: '用户名不能超过255字', trigger: 'blur' }],
+                    phoneNumber:[{ required: false,message:'请输入正确的电话号码',pattern:/^(1[34578]\d{9})$/, trigger: 'blur'}],
+                    remarks:[{ required: false, max:255,message: '备注不能超过255字', trigger: 'blur' }]
                 }
             }
         },

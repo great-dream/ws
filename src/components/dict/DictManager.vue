@@ -67,7 +67,7 @@
             <el-form-item label="名称" prop="name" :required="true">
                 <el-input v-model="addForm.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remark" :required="false">
                 <el-input type="textarea" v-model="addForm.remark" autocomplete="off"></el-input>
             </el-form-item>
 <!--            <el-form-item label="删  除">-->
@@ -99,7 +99,7 @@
             <el-form-item label="名称" prop="name" :required="true">
                 <el-input v-model="editForm.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remark" :required="false">
                 <el-input type="textarea" v-model="editForm.remark" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="删  除">
@@ -140,8 +140,11 @@
                 loading:false,
                 commonRules: {
                     category:[{ required: true, message: '类别必选', trigger: ['blur','change'] }],
-                    code:[{ required: true, message: '编码必填', trigger: 'blur' }],
-                    name:[{ required: true, message: '名称必填', trigger: 'blur' }]
+                    code:[{ required: true, message: '编码必填', trigger: 'blur' }
+                     ,{ required: false, max:255,message: '编码不能超过255字', trigger: 'blur' }],
+                    name:[{ required: true, message: '名称必填', trigger: 'blur' }
+                     ,{ required: false, max:255,message: '名称不能超过255字', trigger: 'blur' }],
+                    remark:[{ required: false, max:255,message: '备注不能超过255字', trigger: 'blur' }]
                 }
             }
         },
