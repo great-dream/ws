@@ -15,7 +15,7 @@
         <el-button type="primary" v-on:click="addDict()">新增字典</el-button>
     </div>
     <div>
-        <el-table :data="dicts" stripeborder="true" v-loading="loading" element-loading-text="加载中...">
+        <el-table :data="dicts" stripeborder="true" v-loading="loading" element-loading-text="加载中..." max-height="400px">
 <!--            <el-table-column prop="id" label="唯一键"></el-table-column>-->
             <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="category" label="类别">
@@ -43,7 +43,7 @@
         <el-pagination
                 :current-page="page"
                 :page-size="size"
-                :page-sizes="[2, 5, 10, 20]"
+                :page-sizes="[5, 10, 20]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total"
                 @size-change="handleSizeChange"
@@ -125,7 +125,7 @@
                 code:"",
                 name:"",
                 page:1,
-                size:20,
+                size:10,
                 total:0,
                 dicts:[],
                 addDictVisible:false,

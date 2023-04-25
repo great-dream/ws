@@ -15,7 +15,7 @@
         <el-button type="primary" v-on:click="exportExcel()">导出Excel</el-button>
     </div>
     <div>
-        <el-table :data="records" stripe border="true" v-loading="loading" element-loading-text="加载中...">
+        <el-table :data="records" stripe border="true" v-loading="loading" element-loading-text="加载中..." max-height="400px">
             <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="commodityName" label="商品名称"></el-table-column>
             <el-table-column prop="pluginNameName" label="插件名称"></el-table-column>
@@ -33,7 +33,7 @@
         <el-pagination
                 :current-page="page"
                 :page-size="size"
-                :page-sizes="[2, 5, 10, 20]"
+                :page-sizes="[5, 10, 20]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total"
                 @size-change="handleSizeChange"
@@ -55,7 +55,7 @@
                 endTime:"",
                 dtRange:[],
                 page:1,
-                size:20,
+                size:10,
                 total:0,
                 records:[],
                 operationType:"",

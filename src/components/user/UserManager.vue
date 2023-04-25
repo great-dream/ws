@@ -41,7 +41,7 @@
         <el-pagination
                 :current-page="page"
                 :page-size="size"
-                :page-sizes="[2, 5, 10, 20]"
+                :page-sizes="[5, 10, 20]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total"
                 @size-change="handleSizeChange"
@@ -127,7 +127,7 @@
                 userId:"",
                 userName:"",
                 page:1,
-                size:20,
+                size:10,
                 total:0,
                 users:[],
                 addUserVisible:false,

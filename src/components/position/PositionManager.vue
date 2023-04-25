@@ -14,7 +14,7 @@
         <el-button type="primary" v-on:click="addPosition()">新增仓位</el-button>
     </div>
     <div>
-        <el-table :data="positions" stripe border="true" v-loading="loading" element-loading-text="加载中...">
+        <el-table :data="positions" stripe border="true" v-loading="loading" element-loading-text="加载中..." max-height="400px">
 <!--            <el-table-column prop="id" label="唯一键"></el-table-column>-->
             <el-table-column type="index" label="序号" :index="indexMethod" width="60"></el-table-column>
             <el-table-column prop="warehouse" label="仓库">
@@ -43,7 +43,7 @@
         <el-pagination
                 :current-page="page"
                 :page-size="size"
-                :page-sizes="[2, 5, 10, 20]"
+                :page-sizes="[5, 10, 20]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total"
                 @size-change="handleSizeChange"
@@ -130,7 +130,7 @@
                 warehouse:"",
                 position:"",
                 page:1,
-                size:20,
+                size:10,
                 total:0,
                 positions:[],
                 addPositionVisible:false,
