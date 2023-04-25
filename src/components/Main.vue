@@ -1,9 +1,9 @@
 <template>
-    <div style="height: 550px;margin: 0;padding: 0">
-        <el-container id="el-container"  style="height: 550px;margin: 0;padding: 0">
-            <el-header height="50px" style="margin-top: 5px;font-size: 30px;background-color: #409EFF">在线仓储系统</el-header>
-            <el-container style="height: 500px;margin: 0;padding: 0">
-                <el-aside width="100px"  style="background-color: #99AAFF;height: 500px">
+    <div>
+        <el-container id="el-container">
+            <el-header height="50px" style="font-size: 30px;background-color: #409EFF">在线仓储系统</el-header>
+            <el-container>
+                <el-aside width="100px"  style="background-color: #99AAFF">
                     <router-link to="/userManager">用户管理</router-link><br>
                     <router-link to="/positionManager">仓位管理</router-link><br>
                     <router-link to="/dictManager">字典管理</router-link><br>
@@ -13,8 +13,8 @@
                     <br><br><br><br><br><br><br><br>
                     <router-link to="" v-on:click.prevent="exitWs()">退出系统</router-link>
                 </el-aside>
-                <el-container  style="margin:0;padding:0;height: 500px">
-                    <el-main style="margin:0;padding:0;height: 500px">
+                <el-container  style="margin:0;padding:0;height: 519px">
+                    <el-main style="margin:0;padding:0;height: 100%">
                         <el-config-provider :locale="locale">
                             <router-view  style="margin:0;padding:0;height: 500px"></router-view>
                         </el-config-provider>

@@ -1,16 +1,7 @@
 <template>
-<!--    <div>在线仓储系统</div>-->
-<!--    <div>-->
-<!--        用户名<input v-model="userId" type="text" />-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        密  码<input v-model="password" type="password" />-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <input  type="button" value="登  录" v-on:click="login()" />-->
-<!--    </div>-->
-    <div style="margin-top: 200px;text-align: center">
-        <el-form style="width: 300px;margin: auto;border: #409EFF 1px solid;padding: 5px"  v-loading="loading" element-loading-text="加载中...">
+    <div style="text-align: center;height:519px;">
+        <!-- 为了登录框上下左右剧中 position: absolute; left: 50%;top: 50%;transform: translate(-50%,-50%);-->
+        <el-form style="width: 300px;border: #409EFF 1px solid;position: absolute; left: 50%;top: 50%;transform: translate(-50%,-50%);"  v-loading="loading" element-loading-text="加载中...">
             <el-form-item ><el-text style="margin: auto;font-size:25px"><b>在线仓储系统</b></el-text></el-form-item>
             <el-form-item label="账号">
                 <el-input v-model="userId" size="150px"/>
