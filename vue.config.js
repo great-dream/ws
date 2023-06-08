@@ -19,8 +19,9 @@ module.exports = {
         pathRewrite: {//必须在rarget之前，否则不生效
           '^/api': ''
         },
-       // target: 'http://123.57.240.139:8080/onlinews',
-        target: 'http://localhost:8080/onlinews',
+        // target: 'http://123.57.240.139:8080/onlinews',
+        target: 'http://152.136.27.47:8080/onlinews',
+        //target: 'http://localhost:8080/onlinews',
         changeOrigin: true,
         ws: false
       }

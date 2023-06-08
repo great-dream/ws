@@ -19,7 +19,10 @@
                             <router-view  style="margin:0;padding:0;height: 500px"></router-view>
                         </el-config-provider>
                     </el-main>
-                    <el-footer style="height: 25px;font-size: 10px;background-color:#EEEEEE">CopyRight© 2023-2024 中国电网</el-footer>
+                    <el-footer style="height: 25px;font-size: 10px;background-color:#EEEEEE">
+                        CopyRight© 2023-2024 中国电网 备案号:
+                        <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备2023013981号-1</a>
+                    </el-footer>
                 </el-container>
             </el-container>
         </el-container>
