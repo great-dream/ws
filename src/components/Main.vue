@@ -20,8 +20,9 @@
                         </el-config-provider>
                     </el-main>
                     <el-footer style="height: 25px;font-size: 10px;background-color:#EEEEEE">
-                        CopyRight© 2023-2024 中国电网 备案号:
-                        <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备2023013981号-1</a>
+                        CopyRight© 2023-2024 中国电网
+                        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202004451" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="../assets/备案图标.png" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11011202004451号</p></a>
+                        <a target="_blank" href="https://beian.miit.gov.cn/" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京ICP备2023013981号-1</p></a>
                     </el-footer>
                 </el-container>
             </el-container>
